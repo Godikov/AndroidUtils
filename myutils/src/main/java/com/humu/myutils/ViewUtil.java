@@ -1,6 +1,9 @@
 package com.humu.myutils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +21,7 @@ public class ViewUtil {
      * @param textView
      * @param text
      */
-    public static void setTextView(TextView textView,String text){
+    public static void setText(TextView textView,String text){
         if(textView == null){
             return;
         }
@@ -121,6 +124,48 @@ public class ViewUtil {
             return;
         }
         imageView.setImageBitmap(bitmap);
+    }
+
+    public static void setImageDrawable(ImageView imageView, Drawable drawable){
+        if(imageView == null){
+            return;
+        }
+        if(drawable == null){
+            return;
+        }
+        imageView.setImageDrawable(drawable);
+    }
+
+    public static void setOnClickListener(View view, View.OnClickListener onClickListener){
+        if(view == null){
+            return;
+        }
+        if(onClickListener == null){
+            return;
+        }
+        view.setOnClickListener(onClickListener);
+    }
+
+    public static<T extends View> T findView(View parentView,int viewId){
+        T t = null;
+        if(parentView != null){
+            t = (T) parentView.findViewById(viewId);
+        }
+        return t;
+    }
+
+    public static void setTypeFace(Context context,TextView textView, String typeFacePath){
+        if(context == null){
+            return;
+        }
+        if(textView == null){
+            return;
+        }
+        if(TextUtils.isEmpty(typeFacePath)){
+            return;
+        }
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), typeFacePath);
+        textView.setTypeface(typeface);
     }
 
 }
