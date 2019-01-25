@@ -11,6 +11,8 @@ import android.text.TextUtils;
 
 public class SharedPreferencesUtil {
 
+    private SharedPreferencesUtil(){}
+
     public static void setString(Context context,String key,String value){
         if(!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value)){
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

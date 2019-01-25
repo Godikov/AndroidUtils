@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 public class ViewUtil {
 
+    private ViewUtil(){}
+
     /**
      * 设置TextView文字
      * @param textView

@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 
 public class FileUtil {
 
+    private FileUtil(){}
+
     /**
      * 获取Uri的绝对路径
      * @param uri

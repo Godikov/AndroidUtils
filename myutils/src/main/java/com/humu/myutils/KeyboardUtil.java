@@ -12,6 +12,8 @@ import android.widget.EditText;
 
 public class KeyboardUtil {
 
+    private KeyboardUtil(){}
+
     /**
      * 为给定的编辑器开启软键盘
      *

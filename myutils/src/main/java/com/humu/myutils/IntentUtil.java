@@ -13,6 +13,8 @@ import java.io.Serializable;
 
 public class IntentUtil {
 
+    private IntentUtil(){}
+
     public static String getStringExtra(Intent intent,String tag){
         String result = "";
         if(intent != null && intent.hasExtra(tag)){

@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 public class RegexUtil {
 
+    private RegexUtil(){}
+
     /**
      * 手机号码私密，中间4位用星号表示
      * @param phone 待加密的手机号

@@ -13,6 +13,8 @@ import java.util.List;
 
 public class NetUtil {
 
+    private NetUtil(){}
+
     /**
      * 判断是否有网络连接
      */

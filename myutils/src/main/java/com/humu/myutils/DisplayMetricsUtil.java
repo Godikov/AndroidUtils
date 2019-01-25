@@ -11,6 +11,10 @@ import android.view.WindowManager;
 
 public class DisplayMetricsUtil {
 
+    private DisplayMetricsUtil(){
+
+    }
+
     public static DisplayMetrics getDisplayMetrics(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
