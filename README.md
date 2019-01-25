@@ -1,6 +1,6 @@
 # AndroidUtils
 
-Android工具类,收纳了一些日常开发中通常会用到的方法，便于日后的开发。
+Android工具类,收纳了一些日常开发中通常会用到的方法，便于日后的开发，会不停更新，定期打包。
 
 集成方式：
     Step 1. Add the JitPack repository to your build file
