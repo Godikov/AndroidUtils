@@ -3,8 +3,8 @@ package com.humu.myutils;
 import android.os.Handler;
 import android.os.Message;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *  倒计时工具类，支持同时进行多个倒计时，并且添加监听。
@@ -13,8 +13,9 @@ import java.util.Map;
 
 public class TimerUtils {
 
-    private static final Map<Integer,Integer> timerMap = new HashMap<>();
-    private static final Map<Integer,CountDownTimerListener> listenerMap = new HashMap<>();
+    private static final Map<Integer,TimerHandler> handlerMap = new ConcurrentHashMap<>();
+    private static final Map<Integer,Integer> timerMap = new ConcurrentHashMap<>();
+    private static final Map<Integer,CountDownTimerListener> listenerMap = new ConcurrentHashMap<>();
 
     private TimerUtils(){}
 
@@ -27,14 +28,21 @@ public class TimerUtils {
     public static void start(int tag,int time,CountDownTimerListener countDownTimerListener){
         if(!timerMap.containsKey(tag)){
             TimerHandler handler = new TimerHandler();
+            synchronized (handlerMap){
+                handlerMap.put(tag,handler);
+            }
             Message message = handler.obtainMessage(tag);
             if(time > 0){
                 if(countDownTimerListener != null){
                     countDownTimerListener.onStartCountDown(tag);
                 }
                 handler.sendMessageDelayed(message,1000);
-                timerMap.put(tag,time);
-                listenerMap.put(tag,countDownTimerListener);
+                synchronized (timerMap){
+                    timerMap.put(tag,time);
+                }
+                synchronized (listenerMap){
+                    listenerMap.put(tag,countDownTimerListener);
+                }
             }
         }
     }
@@ -46,7 +54,7 @@ public class TimerUtils {
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public synchronized void handleMessage(Message msg) {
             super.handleMessage(msg);
             int what = msg.what;
             if(listenerMap.containsKey(what)){
@@ -62,8 +70,7 @@ public class TimerUtils {
                         }
                         if(time == 0){
                             //倒计时结束
-                            timerMap.remove(what);
-                            listenerMap.remove(what);
+                            removeTag(what);
                             countDownTimerListener.onCountDownEnd(what);
                         }else{
                             Message message = obtainMessage(what);
@@ -76,6 +83,24 @@ public class TimerUtils {
 
     }
 
+    private static void removeTag(int tag){
+        if(timerMap.containsKey(tag)){
+            synchronized (timerMap){
+                timerMap.remove(tag);
+            }
+        }
+        if(listenerMap.containsKey(tag)){
+            synchronized (listenerMap){
+                listenerMap.remove(tag);
+            }
+        }
+        if(handlerMap.containsKey(tag)){
+            synchronized (handlerMap){
+                handlerMap.remove(tag);
+            }
+        }
+    }
+
     /**
      * 倒计时监听
      */
@@ -84,6 +109,31 @@ public class TimerUtils {
         void onStartCountDown(int tag);
         void onCount(int tag, int timeNow);
         void onCountDownEnd(int tag);
+    }
+
+    /**
+     * 停止倒计时（指定的倒计时）
+     * @param tag
+     */
+    public synchronized static void stop(int tag){
+        if(handlerMap.containsKey(tag)){
+            TimerHandler handler = handlerMap.get(tag);
+            if(handler != null && handler.hasMessages(tag)){
+                handler.removeMessages(tag);
+            }
+            removeTag(tag);
+        }
+    }
+
+    /**
+     * 停止所有倒计时
+     */
+    public synchronized static void stopAll(){
+        if(handlerMap.size() > 0){
+            for(int tag: handlerMap.keySet()){
+                stop(tag);
+            }
+        }
     }
 
 }
